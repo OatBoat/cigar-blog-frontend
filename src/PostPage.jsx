@@ -18,19 +18,28 @@ const [currentPosts, setCurrentPosts] = useState({});
   }
 
   const handleShow = (post) => {
-    console.log("handleShow", post)
     setIsPostsShowVisible(true);
     setCurrentPosts(post)
   }
 
   const handleUpdate = (post, params) => {
-    console.log("handleUpdate");
+    
     axios.patch(`http://localhost:3000/posts/${post.id}.json`, params)
       .then((response) => {
       console.log(response.data);
       setPosts(posts.map(p => p.id === response.data.id ? response.data : p))
       setIsPostsShowVisible(false);
     })
+  }
+
+  const handleDestroy = (post) => {
+     axios.delete(`http://localhost:3000/posts/${post.id}.json`)
+      .then((response) => {
+        console.log(response.data);
+        setPosts(posts.filter(p => p.id !== posts.id));
+        setIsPostsShowVisible(false);
+      })
+
   }
 
   useEffect(handleIndex,[]);
@@ -41,7 +50,7 @@ const [currentPosts, setCurrentPosts] = useState({});
       <PostNew />
       <PostIndex postProp={posts} onShow={handleShow}/>
       <Modal show={isPostsShowVisible} onClose={() => setIsPostsShowVisible(false)} >
-        <PostShow post={currentPosts} onUpdate={handleUpdate}/>
+        <PostShow post={currentPosts} onUpdate={handleUpdate} onDestroy={handleDestroy}/>
 
       </Modal>
     </div>
