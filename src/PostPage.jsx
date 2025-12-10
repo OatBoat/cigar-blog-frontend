@@ -22,6 +22,13 @@ const [currentPosts, setCurrentPosts] = useState({});
     setCurrentPosts(post)
   }
 
+const handleCreate = (params) => {
+    axios.post("/posts.json", params).then((response) => {
+      // spread operator
+      setPosts([...posts, response.data]);
+    })
+  }
+
   const handleUpdate = (post, params) => {
     
     axios.patch(`http://localhost:3000/posts/${post.id}.json`, params)
@@ -47,7 +54,7 @@ const [currentPosts, setCurrentPosts] = useState({});
 
   return (
     <div>
-      <PostNew />
+      <PostNew onCreate={handleCreate}/>
       <PostIndex postProp={posts} onShow={handleShow}/>
       <Modal show={isPostsShowVisible} onClose={() => setIsPostsShowVisible(false)} >
         <PostShow post={currentPosts} onUpdate={handleUpdate} onDestroy={handleDestroy}/>
